@@ -645,7 +645,7 @@ with tab4:
         fig.patch.set_facecolor(BG)
 
         norm   = plt.Normalize(imp.min(), imp.max())
-        cmap   = plt.cm.get_cmap("RdPu")
+        cmap   = plt.colormaps["RdPu"]
         colors = [cmap(norm(v) * .7 + .25) for v in imp.values[::-1]]
 
         bars = ax.barh(imp.index[::-1], imp.values[::-1],
