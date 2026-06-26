@@ -488,43 +488,81 @@ with tab2:
         arr  = encode_and_scale(inp, bundle)
         proba, pred, risk = predict(arr, bundle, THRESHOLD)
 
-        p        = proba[0]
-        is_churn = pred[0] == 1
+        p        = float(proba[0])
+        is_churn = bool(pred[0] == 1)
         risk_str = str(risk[0])
-        pill_cls = "pl-r" if risk_str == "High" else ("pl-y" if risk_str == "Medium" else "pl-g")
-        pill_ico = "🔴" if risk_str == "High" else ("🟡" if risk_str == "Medium" else "🟢")
-        verdict  = "Diprediksi CHURN" if is_churn else "Diprediksi TIDAK CHURN"
-        vc       = "#f87171" if is_churn else "#4ade80"
-        card_cls = "is-churn" if is_churn else "no-churn"
-        bar_bg   = f"linear-gradient(90deg, {vc}99, {vc})"
+
+        # ── warna berdasarkan risk & prediksi ──
+        vc         = "#f87171" if is_churn else "#4ade80"
+        card_bg    = "rgba(239,68,68,.07)"    if is_churn else "rgba(34,197,94,.07)"
+        card_bdr   = "#f87171"                if is_churn else "#4ade80"
+        verdict    = "⚠ Diprediksi CHURN"    if is_churn else "✓ Diprediksi TIDAK CHURN"
+
+        if risk_str == "High":
+            pill_bg, pill_color, pill_bdr, pill_ico = "rgba(239,68,68,.15)", "#f87171", "rgba(239,68,68,.4)", "🔴"
+        elif risk_str == "Medium":
+            pill_bg, pill_color, pill_bdr, pill_ico = "rgba(234,179,8,.15)",  "#fbbf24", "rgba(234,179,8,.4)",  "🟡"
+        else:
+            pill_bg, pill_color, pill_bdr, pill_ico = "rgba(34,197,94,.15)",  "#4ade80", "rgba(34,197,94,.4)",  "🟢"
 
         st.markdown(f"""
-        <div class='result-wrap {card_cls}'>
-            <div style='display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem'>
+        <div style="
+            background: {card_bg};
+            border: 1px solid rgba(139,92,246,.25);
+            border-left: 4px solid {card_bdr};
+            border-radius: 16px;
+            padding: 2rem 2.2rem;
+            margin: 1.4rem 0;
+            backdrop-filter: blur(14px);
+        ">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1.2rem;">
+
                 <div>
-                    <div style='font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#7c5bba;margin-bottom:.5rem'>
+                    <div style="font-size:.63rem; text-transform:uppercase; letter-spacing:.12em;
+                                color:#7c5bba; margin-bottom:.6rem; font-family:'Sora',sans-serif;">
                         Hasil Prediksi
                     </div>
-                    <div style='font-size:1.7rem;font-weight:700;color:{vc};font-family:Space Mono,monospace;line-height:1.1'>
+                    <div style="font-size:1.75rem; font-weight:700; color:{vc};
+                                font-family:'Space Mono',monospace; line-height:1.15;">
                         {verdict}
                     </div>
-                    <div style='margin-top:.8rem'>
-                        <span class='pill {pill_cls}'>{pill_ico} {risk_str} Risk</span>
+                    <div style="margin-top:.9rem;">
+                        <span style="
+                            display:inline-flex; align-items:center; gap:.35rem;
+                            padding:.25rem .85rem; border-radius:99px;
+                            font-size:.75rem; font-weight:700; letter-spacing:.05em;
+                            font-family:'Sora',sans-serif;
+                            background:{pill_bg}; color:{pill_color}; border:1px solid {pill_bdr};
+                        ">{pill_ico} {risk_str} Risk</span>
                     </div>
                 </div>
-                <div style='text-align:right'>
-                    <div style='font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#7c5bba;margin-bottom:.4rem'>
+
+                <div style="text-align:right;">
+                    <div style="font-size:.63rem; text-transform:uppercase; letter-spacing:.12em;
+                                color:#7c5bba; margin-bottom:.5rem; font-family:'Sora',sans-serif;">
                         Probabilitas Churn
                     </div>
-                    <div style='font-size:3rem;font-weight:700;color:#f5f0ff;font-family:Space Mono,monospace;line-height:1'>
-                        {p*100:.1f}<span style='font-size:1.4rem'>%</span>
+                    <div style="font-size:3.2rem; font-weight:700; color:#f5f0ff;
+                                font-family:'Space Mono',monospace; line-height:1;">
+                        {p*100:.1f}<span style="font-size:1.5rem; color:#c4b5fd;">%</span>
                     </div>
-                    <div style='font-size:.7rem;color:#4b3680;margin-top:.3rem'>threshold · {THRESHOLD:.2f}</div>
+                    <div style="font-size:.7rem; color:#6b4fa0; margin-top:.35rem;
+                                font-family:'Sora',sans-serif;">
+                        threshold · {THRESHOLD:.2f}
+                    </div>
                 </div>
+
             </div>
-            <div style='margin-top:1.4rem;background:rgba(255,255,255,.06);border-radius:4px;height:5px;overflow:hidden'>
-                <div style='width:{p*100:.1f}%;height:100%;background:{bar_bg};border-radius:4px;
-                            transition:width .6s ease'></div>
+
+            <!-- progress bar -->
+            <div style="margin-top:1.5rem; background:rgba(255,255,255,.07);
+                        border-radius:6px; height:6px; overflow:hidden;">
+                <div style="width:{p*100:.1f}%; height:100%; border-radius:6px;
+                            background:linear-gradient(90deg, {vc}88, {vc});"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:.4rem;
+                        font-size:.65rem; color:#4b3680; font-family:'Sora',sans-serif;">
+                <span>0%</span><span>50%</span><span>100%</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
