@@ -89,35 +89,40 @@ plt.rcParams.update({
 })
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
-def encode_and_scale(df_input: pd.DataFrame, bundle: dict) -> pd.DataFrame:
+def encode_and_scale(df_input: pd.DataFrame, bundle: dict) -> np.ndarray:
     """
     Encode categorical columns with OrdinalEncoder from bundle['encoders'],
-    then scale all features with bundle['scaler'].
-    Features must match bundle['features'] exactly.
+    then scale using the correct per-feature mean_ & scale_ from bundle['scaler'].
+
+    NOTE: bundle['scaler'] was fitted on 25 columns, but the model only uses 15
+    (bundle['features']). We therefore extract the relevant mean_ / scale_ by
+    matching column names, avoiding a shape mismatch when calling scaler.transform().
+    Returns a plain numpy array (model has no feature_names_in_).
     """
     df = df_input.copy()
-    encoders      = bundle["encoders"]        # {col: OrdinalEncoder}
-    scaler        = bundle["scaler"]          # StandardScaler
-    feature_order = bundle["features"]        # list of 15 feature names
+    encoders      = bundle["encoders"]   # {col: OrdinalEncoder}
+    scaler        = bundle["scaler"]     # StandardScaler fitted on 25 cols
+    feature_order = bundle["features"]  # 15 top features
 
     # --- encode categoricals ---
     for col, enc in encoders.items():
         if col in df.columns:
-            # handle unseen values → fall back to first known category
             known = list(enc.categories_[0])
-            df[col] = df[col].astype(str).apply(lambda x: x if x in known else known[0])
+            df[col] = df[col].astype(str).apply(
+                lambda x, k=known: x if x in k else k[0]
+            )
             df[col] = enc.transform(df[[col]]).ravel()
 
     # --- reorder to match training feature order ---
     df = df[feature_order]
 
-    # --- scale ---
-    df_scaled = pd.DataFrame(
-        scaler.transform(df),
-        columns=feature_order,
-        index=df.index
-    )
-    return df_scaled
+    # --- manual scale: extract mean_ & scale_ for our 15 features only ---
+    scaler_cols = list(scaler.feature_names_in_)
+    idx   = [scaler_cols.index(f) for f in feature_order]
+    mean_ = scaler.mean_[idx]
+    std_  = scaler.scale_[idx]
+    arr   = df.values.astype(float)
+    return (arr - mean_) / std_
 
 
 def predict(df_proc: pd.DataFrame, bundle: dict, thr: float):
