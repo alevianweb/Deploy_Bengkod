@@ -139,16 +139,47 @@ st.markdown("""
 /* ── Inputs ── */
 .stSelectbox > div > div,
 .stNumberInput input,
-.stTextInput input {
-    background: rgba(255,255,255,.05) !important;
-    border: 1px solid rgba(139,92,246,.25) !important;
-    border-radius: 8px !important; color: #e2d9f3 !important;
+.stNumberInput > div > div > input,
+.stTextInput input,
+input[type="number"],
+input[type="text"] {
+    background: rgba(30, 15, 60, 0.85) !important;
+    border: 1px solid rgba(139,92,246,.35) !important;
+    border-radius: 8px !important;
+    color: #e2d9f3 !important;
     font-size: .83rem !important;
+    caret-color: #c4b5fd !important;
 }
+/* placeholder text */
+input::placeholder { color: #7c5bba !important; opacity: 1 !important; }
+input[type="number"]::placeholder { color: #7c5bba !important; opacity: 1 !important; }
+
+/* selectbox displayed value text */
+.stSelectbox > div > div > div,
+.stSelectbox span,
+[data-baseweb="select"] span,
+[data-baseweb="select"] div { color: #e2d9f3 !important; }
+
+/* number input container */
+[data-testid="stNumberInput"] input,
+[data-testid="stNumberInput"] > div > div > input {
+    background: rgba(30, 15, 60, 0.85) !important;
+    color: #e2d9f3 !important;
+}
+/* +/- buttons on number input */
+[data-testid="stNumberInput"] button {
+    background: rgba(124,58,237,.2) !important;
+    color: #c4b5fd !important;
+    border: 1px solid rgba(139,92,246,.3) !important;
+}
+[data-testid="stNumberInput"] button:hover {
+    background: rgba(124,58,237,.4) !important;
+}
+
 .stSelectbox > div > div:focus-within,
 .stNumberInput input:focus {
-    border-color: rgba(139,92,246,.6) !important;
-    box-shadow: 0 0 0 2px rgba(124,58,237,.15) !important;
+    border-color: rgba(139,92,246,.7) !important;
+    box-shadow: 0 0 0 2px rgba(124,58,237,.2) !important;
 }
 label, .stSelectbox label { color: #9d7fd4 !important; font-size: .77rem !important; }
 .stSlider [data-testid="stTickBar"] { color: #6b4fa0 !important; }
