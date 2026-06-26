@@ -408,9 +408,9 @@ with tab2:
         v_col, p_col = st.columns([3, 2])
         with v_col:
             if is_churn:
-                st.error("### ⚠️  Diprediksi CHURN")
+                st.error("⚠️  Diprediksi CHURN")
             else:
-                st.success("### ✅  Diprediksi TIDAK CHURN")
+                st.success("✅  Diprediksi TIDAK CHURN")
 
             risk_labels = {"Low": "🟢  Low Risk", "Medium": "🟡  Medium Risk", "High": "🔴  High Risk"}
             st.info(f"**Level Risiko:** {risk_labels.get(risk_str, risk_str)}")
