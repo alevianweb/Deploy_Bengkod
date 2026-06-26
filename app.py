@@ -363,8 +363,8 @@ with tab2:
         st.markdown("<div class='sec-label'>Dukungan & Kepuasan</div>", unsafe_allow_html=True)
         f11, f12, f13, f14 = st.columns(4)
         satisfaction_score  = f11.slider("⭐ Skor Kepuasan (1–5)",
-                                         float(r_sat["min"]), float(r_sat["max"]),
-                                         float(r_sat["default"]), 0.5)
+                                         int(r_sat["min"]), int(r_sat["max"]),
+                                         int(r_sat["default"]), 1)
         nps_score           = f12.slider("📊 NPS Score (0–10)",
                                          int(r_nps["min"]), int(r_nps["max"]), int(r_nps["default"]))
         support_tickets     = f13.number_input("🎫 Tiket Support",
