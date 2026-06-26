@@ -182,13 +182,44 @@ input[type="number"]::placeholder { color: #7c5bba !important; opacity: 1 !impor
     box-shadow: 0 0 0 2px rgba(124,58,237,.2) !important;
 }
 label, .stSelectbox label { color: #9d7fd4 !important; font-size: .77rem !important; }
-.stSlider [data-testid="stTickBar"] { color: #6b4fa0 !important; }
 
-/* ── File uploader ── */
+/* ── Slider ── */
+.stSlider [data-testid="stTickBar"] { color: #6b4fa0 !important; }
+/* nilai angka di atas thumb slider */
+.stSlider [data-testid="stThumbValue"],
+.stSlider div[data-testid="stThumbValue"] > div,
+.stSlider output,
+.stSlider p { color: #e2d9f3 !important; font-size: .82rem !important; }
+/* track warna ungu */
+.stSlider [role="slider"] { background: #7c3aed !important; border-color: #a855f7 !important; }
+
+/* ── Form submit button ── */
+[data-testid="stForm"] button[kind="primaryFormSubmit"],
+[data-testid="stForm"] .stButton > button,
+button[kind="primaryFormSubmit"] {
+    background: linear-gradient(135deg, #7c3aed, #9333ea) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    border: none !important;
+}
+
+/* ── File uploader — hilangkan teks duplikat ── */
 [data-testid="stFileUploader"] {
     background: rgba(124,58,237,.06) !important;
     border: 1.5px dashed rgba(139,92,246,.35) !important;
     border-radius: 12px !important;
+}
+/* sembunyikan label tersembunyi yang menyebabkan double text */
+[data-testid="stFileUploader"] label { display: none !important; }
+[data-testid="stFileUploaderDropzone"] small,
+[data-testid="stFileUploaderDropzone"] span { color: #9d7fd4 !important; }
+[data-testid="stFileUploaderDropzone"] { background: transparent !important; }
+/* tombol Browse di uploader */
+[data-testid="stFileUploaderDropzone"] button {
+    background: rgba(124,58,237,.25) !important;
+    color: #e2d9f3 !important;
+    border: 1px solid rgba(139,92,246,.4) !important;
+    border-radius: 6px !important;
 }
 
 /* ── Dataframe ── */
